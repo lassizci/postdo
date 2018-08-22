@@ -3,14 +3,9 @@ package main
 import (
     "fmt"
     "errors"
+    "os"
     "database/sql"
     _ "github.com/lib/pq"
-)
-
-const (
-    DB_USER = "todosDB"
-    DB_NAME = "todosDB"
-    TABLE_NAME = "todos"
 )
 
 var db *sql.DB
@@ -18,7 +13,11 @@ var db *sql.DB
 func InitDb() {
   var err error
 
-  dbinfo := fmt.Sprintf("user=%s dbname=%s sslmode=disable", DB_USER, DB_NAME)
+  host := os.Getenv("TODO_DB_HOST")
+  user := os.Getenv("TODO_DB_USER")
+  pass := os.Getenv("TODO_DB_PASSWORD")
+  database := os.Getenv("TODO_DB_DATABASE")
+  dbinfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable", host, user, pass, database)
   db, err = sql.Open("postgres", dbinfo)
   checkErr(err)
   fmt.Println("DB connection should be live")
