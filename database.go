@@ -21,6 +21,29 @@ func InitDb() {
   db, err = sql.Open("postgres", dbinfo)
   checkErr(err)
   fmt.Println("DB connection should be live")
+  CreateTable()
+}
+
+func CreateTable() {
+  if db == nil {
+    err := errors.New("attempted to create tabke with no DB connection")
+    LogError(err)
+  } else {
+    msg := errors.New("Ensure the todos table exists")
+    LogError(msg)
+    const structure = `
+      CREATE TABLE IF NOT EXISTS todos (
+        id integer,
+        name text,
+        completed boolean,
+        due text);
+    `
+    _, err := db.Exec(structure)
+
+    if err != nil {
+      LogError(err)
+    }
+  }
 }
 
 func InsertTodo(todo Todo) (added Todo) {
